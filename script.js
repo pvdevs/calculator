@@ -11,12 +11,11 @@ const operations = ['add', 'subtract', 'multiply', 'divide'];
 
 
 buttons.forEach((button) => {
-    button.addEventListener('click', operate);
+    button.addEventListener('click', calculator);
 })
 
 
-function operate(event) {
-
+function calculator(event) {
     const button = event.target;
 
     // This condition is used if the last add item is a operator and not a number.
@@ -24,11 +23,10 @@ function operate(event) {
         
         num.push(holder.join(''));
         num.push(0);
-        
-        add(num[0],num[1]);
+
+        operate(num[0],num[1]);
 
         holder.length = 0;
-        num.length = 0;
     }
 
     else if(button.value === 'enter') {
@@ -36,14 +34,12 @@ function operate(event) {
 
         holder.length = 0;
 
-        add(num[0],num[1]);
-
-        num.length = 0;
+        operate(num[0],num[1]);
     }
 
 
     else if(button.value === 'add' && num.length === 0) {
-        operator = 'add'
+        operator = 'add';
 
         num.push(holder.join(''));
 
@@ -54,14 +50,90 @@ function operate(event) {
 
     // This condition is used when user alredy add 2 numbers and keeps adding more operations.
     else if(button.value === 'add' && num.length > 0) {
-        operator = 'add'
+        operator = 'add';
 
         num.push(holder.join(''));
 
         console.log(num);
 
         holder.length = 0;
-        add(num[0],num[1]);
+
+        operate(num[0],num[1]);
+
+        console.log('num:',num);
+    }
+
+    else if(button.value === 'subtract' && num.length === 0) {
+        operator = 'subtract';
+
+        num.push(holder.join(''));
+
+        holder.length = 0;
+
+        console.log('num:',num);
+    }
+
+    // This condition is used when user alredy add 2 numbers and keeps adding more operations.
+    else if(button.value === 'subtract' && num.length > 0) {
+        operator = 'subtract';
+
+        num.push(holder.join(''));
+
+        console.log(num);
+
+        holder.length = 0;
+
+        operate(num[0],num[1]);
+
+        console.log('num:',num);
+    }
+
+    else if(button.value === 'multiply' && num.length === 0) {
+        operator = 'multiply';
+
+        num.push(holder.join(''));
+
+        holder.length = 0;
+
+        console.log('num:',num);
+    }
+
+    // This condition is used when user alredy add 2 numbers and keeps adding more operations.
+    else if(button.value === 'multiply' && num.length > 0) {
+        operator = 'multiply';
+
+        num.push(holder.join(''));
+
+        console.log(num);
+
+        holder.length = 0;
+
+        operate(num[0],num[1]);
+
+        console.log('num:',num);
+    }
+
+    else if(button.value === 'divide' && num.length === 0) {
+        operator = 'divide';
+
+        num.push(holder.join(''));
+
+        holder.length = 0;
+
+        console.log('num:',num);
+    }
+
+    // This condition is used when user alredy add 2 numbers and keeps adding more operations.
+    else if(button.value === 'subtract' && num.length > 0) {
+        operator = 'subtract'
+
+        num.push(holder.join(''));
+
+        console.log(num);
+
+        holder.length = 0;
+
+        operate(num[0],num[1]);
 
         console.log('num:',num);
     }
@@ -74,7 +146,15 @@ function operate(event) {
     }
 }
 
-    
+
+function operate(num1,num2) {
+    if (operator === 'add') add(num1,num2);
+    if (operator === 'subtract') subtract(num1,num2);
+    if (operator === 'multiply') multiply(num1,num2);
+    if (operator === 'divide') divide(num1,num2);
+}
+
+
 function add(num1,num2) {
 
     const secondNumber = parseInt(num2);
@@ -89,6 +169,72 @@ function add(num1,num2) {
 
     } else {
     const result = parseInt(num1) + parseInt(num2);
+    num.length = 0;
+    num.push(result);
+
+    console.log(result);
+    return result;
+}
+}
+   
+function subtract(num1,num2) {
+
+    const secondNumber = parseInt(num2);
+
+    if(isNaN(secondNumber)) { // This condition is used to prevent bugs when user keeps pressing operator button.
+        const result = parseInt(num1);
+        num.length = 0;
+        num.push(result);
+
+        console.log('result:',result);
+        return result;
+
+    } else {
+    const result = parseInt(num1) - parseInt(num2);
+    num.length = 0;
+    num.push(result);
+
+    console.log(result);
+    return result;
+}
+}
+   
+function multiply(num1,num2) {
+
+    const secondNumber = parseInt(num2);
+
+    if(isNaN(secondNumber)) { // This condition is used to prevent bugs when user keeps pressing operator button.
+        const result = parseInt(num1);
+        num.length = 0;
+        num.push(result);
+
+        console.log('result:',result);
+        return result;
+
+    } else {
+    const result = parseInt(num1) * parseInt(num2);
+    num.length = 0;
+    num.push(result);
+
+    console.log(result);
+    return result;
+}
+}
+   
+function divide(num1,num2) {
+
+    const secondNumber = parseInt(num2);
+
+    if(isNaN(secondNumber)) { // This condition is used to prevent bugs when user keeps pressing operator button.
+        const result = parseInt(num1);
+        num.length = 0;
+        num.push(result);
+
+        console.log('result:',result);
+        return result;
+
+    } else {
+    const result = parseInt(num1) / parseInt(num2);
     num.length = 0;
     num.push(result);
 
