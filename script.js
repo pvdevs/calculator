@@ -50,7 +50,6 @@ function calculator(event) {
 
     // This condition is used when user alredy add 2 numbers and keeps adding more operations.
     else if(button.value === 'add' && num.length > 0) {
-        operator = 'add';
 
         num.push(holder.join(''));
 
@@ -61,6 +60,7 @@ function calculator(event) {
         operate(num[0],num[1]);
 
         console.log('num:',num);
+        operator = 'add';
     }
 
     else if(button.value === 'subtract' && num.length === 0) {
@@ -75,7 +75,6 @@ function calculator(event) {
 
     // This condition is used when user alredy add 2 numbers and keeps adding more operations.
     else if(button.value === 'subtract' && num.length > 0) {
-        operator = 'subtract';
 
         num.push(holder.join(''));
 
@@ -86,6 +85,7 @@ function calculator(event) {
         operate(num[0],num[1]);
 
         console.log('num:',num);
+        operator = 'subtract';
     }
 
     else if(button.value === 'multiply' && num.length === 0) {
@@ -100,7 +100,6 @@ function calculator(event) {
 
     // This condition is used when user alredy add 2 numbers and keeps adding more operations.
     else if(button.value === 'multiply' && num.length > 0) {
-        operator = 'multiply';
 
         num.push(holder.join(''));
 
@@ -111,6 +110,7 @@ function calculator(event) {
         operate(num[0],num[1]);
 
         console.log('num:',num);
+        operator = 'multiply';
     }
 
     else if(button.value === 'divide' && num.length === 0) {
@@ -124,9 +124,7 @@ function calculator(event) {
     }
 
     // This condition is used when user alredy add 2 numbers and keeps adding more operations.
-    else if(button.value === 'subtract' && num.length > 0) {
-        operator = 'subtract'
-
+    else if(button.value === 'divide' && num.length > 0) {
         num.push(holder.join(''));
 
         console.log(num);
@@ -136,6 +134,7 @@ function calculator(event) {
         operate(num[0],num[1]);
 
         console.log('num:',num);
+        operator = 'divide'
     }
 
     else {
@@ -233,6 +232,9 @@ function divide(num1,num2) {
         console.log('result:',result);
         return result;
 
+    } else if(secondNumber === 0) {
+        console.log('lol');
+        num.length = 0;
     } else {
     const result = parseInt(num1) / parseInt(num2);
     num.length = 0;
