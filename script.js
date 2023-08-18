@@ -1,246 +1,96 @@
-const displayResult = document.querySelector('result');
-const buttons = document.querySelectorAll('.btn');
+// Get references to the HTML elements
+const displayElement = document.querySelector('.result');
+const numberButtons = document.querySelectorAll('.btn.number');
+const operatorButtons = document.querySelectorAll('.btn.operator');
+const decimalButton = document.querySelector('.btn.decimal');
+const enterButton = document.querySelector('.btn.enter');
+const clearButton = document.querySelector('.btn.clear');
 
-const holder = [];
-const num = [];
-const num2 = [];
-let operator;
-//let result;
+const numberBuffer = [];
+const numbers = [];
+const operators = ['add', 'subtract', 'multiply', 'divide'];
 
-const operations = ['add', 'subtract', 'multiply', 'divide'];
-
-
-buttons.forEach((button) => {
-    button.addEventListener('click', calculator);
-})
+let currentOperator;
 
 
-function calculator(event) {
-    const button = event.target;
+// Attach event listeners to the classes with multiple buttons
+numberButtons.forEach(button => {
+    button.addEventListener('click', handleNumberButtonClick);
+});
 
-    // This condition is used if the last add item is a operator and not a number.
-    if(button.value === 'enter' && num.length < 2) {
-        
-        num.push(holder.join(''));
-        num.push(0);
+operatorButtons.forEach(button => {
+    button.addEventListener('click', handleOperatorButtonClick);
+});
 
-        operate(num[0],num[1]);
+// Attach event listeners to one button classes
+decimalButton.addEventListener('click', handleDecimalButtonClick);
+enterButton.addEventListener('click', handleEnterButtonClick);
+clearButton.addEventListener('click', handleClearButtonClick);
 
-        holder.length = 0;
+function handleNumberButtonClick(event) {
+    const number = event.target.value;
+    numberBuffer.push(number);
+    updateDisplay();
+}
+
+function handleOperatorButtonClick(event) {
+    if (numberBuffer.length > 0) {
+        numbers.push(parseFloat(numberBuffer.join('')));
+        numberBuffer.length = 0;
     }
+    currentOperator = event.target.value;
+}
 
-    else if(button.value === 'enter') {
-        num.push(holder.join(''));
-
-        holder.length = 0;
-
-        operate(num[0],num[1]);
-    }
-
-
-    else if(button.value === 'add' && num.length === 0) {
-        operator = 'add';
-
-        num.push(holder.join(''));
-
-        holder.length = 0;
-
-        console.log('num:',num);
-    }
-
-    // This condition is used when user alredy add 2 numbers and keeps adding more operations.
-    else if(button.value === 'add' && num.length > 0) {
-
-        num.push(holder.join(''));
-
-        console.log(num);
-
-        holder.length = 0;
-
-        operate(num[0],num[1]);
-
-        console.log('num:',num);
-        operator = 'add';
-    }
-
-    else if(button.value === 'subtract' && num.length === 0) {
-        operator = 'subtract';
-
-        num.push(holder.join(''));
-
-        holder.length = 0;
-
-        console.log('num:',num);
-    }
-
-    // This condition is used when user alredy add 2 numbers and keeps adding more operations.
-    else if(button.value === 'subtract' && num.length > 0) {
-
-        num.push(holder.join(''));
-
-        console.log(num);
-
-        holder.length = 0;
-
-        operate(num[0],num[1]);
-
-        console.log('num:',num);
-        operator = 'subtract';
-    }
-
-    else if(button.value === 'multiply' && num.length === 0) {
-        operator = 'multiply';
-
-        num.push(holder.join(''));
-
-        holder.length = 0;
-
-        console.log('num:',num);
-    }
-
-    // This condition is used when user alredy add 2 numbers and keeps adding more operations.
-    else if(button.value === 'multiply' && num.length > 0) {
-
-        num.push(holder.join(''));
-
-        console.log(num);
-
-        holder.length = 0;
-
-        operate(num[0],num[1]);
-
-        console.log('num:',num);
-        operator = 'multiply';
-    }
-
-    else if(button.value === 'divide' && num.length === 0) {
-        operator = 'divide';
-
-        num.push(holder.join(''));
-
-        holder.length = 0;
-
-        console.log('num:',num);
-    }
-
-    // This condition is used when user alredy add 2 numbers and keeps adding more operations.
-    else if(button.value === 'divide' && num.length > 0) {
-        num.push(holder.join(''));
-
-        console.log(num);
-
-        holder.length = 0;
-
-        operate(num[0],num[1]);
-
-        console.log('num:',num);
-        operator = 'divide'
-    }
-
-    else {
-    console.log('num:',num);
-    holder.push(button.value);
-    console.log('holder:',holder);
-
+function handleDecimalButtonClick() {
+    if (!numberBuffer.includes('.')) {
+        numberBuffer.push('.');
+        updateDisplay();
     }
 }
 
-
-function operate(num1,num2) {
-    if (operator === 'add') add(num1,num2);
-    if (operator === 'subtract') subtract(num1,num2);
-    if (operator === 'multiply') multiply(num1,num2);
-    if (operator === 'divide') divide(num1,num2);
+function handleEnterButtonClick() {
+    if (numberBuffer.length > 0) {
+        numbers.push(parseFloat(numberBuffer.join('')));
+        numberBuffer.length = 0;
+    }
+    performCalculation();
 }
 
-
-function add(num1,num2) {
-
-    const secondNumber = parseInt(num2);
-
-    if(isNaN(secondNumber)) { // This condition is used to prevent bugs when user keeps pressing operator button.
-        const result = parseInt(num1);
-        num.length = 0;
-        num.push(result);
-
-        console.log('result:',result);
-        return result;
-
-    } else {
-    const result = parseInt(num1) + parseInt(num2);
-    num.length = 0;
-    num.push(result);
-
-    console.log(result);
-    return result;
+function handleClearButtonClick() {
+    numberBuffer.length = 0;
+    numbers.length = 0;
+    updateDisplay();
 }
+
+function performCalculation() {
+    if (numbers.length < 2 || !currentOperator) {
+        return;
+    }
+
+    const num1 = numbers.shift();
+    const num2 = numbers.shift();
+    let result;
+
+    switch (currentOperator) {
+        case 'add':
+            result = num1 + num2;
+            break;
+        case 'subtract':
+            result = num1 - num2;
+            break;
+        case 'multiply':
+            result = num1 * num2;
+            break;
+        case 'divide':
+            result = num1 / num2;
+            break;
+    }
+
+    numbers.unshift(result);
+    console.log(numbers);
+    updateDisplay();
 }
-   
-function subtract(num1,num2) {
 
-    const secondNumber = parseInt(num2);
-
-    if(isNaN(secondNumber)) { // This condition is used to prevent bugs when user keeps pressing operator button.
-        const result = parseInt(num1);
-        num.length = 0;
-        num.push(result);
-
-        console.log('result:',result);
-        return result;
-
-    } else {
-    const result = parseInt(num1) - parseInt(num2);
-    num.length = 0;
-    num.push(result);
-
-    console.log(result);
-    return result;
-}
-}
-   
-function multiply(num1,num2) {
-
-    const secondNumber = parseInt(num2);
-
-    if(isNaN(secondNumber)) { // This condition is used to prevent bugs when user keeps pressing operator button.
-        const result = parseInt(num1);
-        num.length = 0;
-        num.push(result);
-
-        console.log('result:',result);
-        return result;
-
-    } else {
-    const result = parseInt(num1) * parseInt(num2);
-    num.length = 0;
-    num.push(result);
-
-    console.log(result);
-    return result;
-}
-}
-   
-function divide(num1,num2) {
-
-    const secondNumber = parseInt(num2);
-
-    if(isNaN(secondNumber)) { // This condition is used to prevent bugs when user keeps pressing operator button.
-        const result = parseInt(num1);
-        num.length = 0;
-        num.push(result);
-
-        console.log('result:',result);
-        return result;
-
-    } else if(secondNumber === 0) {
-        console.log('lol');
-        num.length = 0;
-    } else {
-    const result = parseInt(num1) / parseInt(num2);
-    num.length = 0;
-    num.push(result);
-
-    console.log(result);
-    return result;
-}
+function updateDisplay() {
+    displayElement.textContent = numberBuffer.length > 0 ? numberBuffer.join('') : numbers[0] || '';
 }
