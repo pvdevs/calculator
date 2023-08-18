@@ -6,6 +6,7 @@ const operatorButtons = document.querySelectorAll('.btn.operator');
 const decimalButton = document.querySelector('.btn.decimal');
 const enterButton = document.querySelector('.btn.enter');
 const clearButton = document.querySelector('.btn.clear');
+const deleteButton = document.querySelector('.btn.delete')
 
 const numberBuffer = [];
 const numbers = [];
@@ -28,64 +29,45 @@ operatorButtons.forEach(button => {
 decimalButton.addEventListener('click', handleDecimalButtonClick);
 enterButton.addEventListener('click', handleEnterButtonClick);
 clearButton.addEventListener('click', handleClearButtonClick);
+deleteButton.addEventListener('click', handleDeleteButtonClick);
 window.addEventListener("keydown", handleKeyboardPress);
 
 // Suport Functions
 
+function handleDeleteButtonClick() {
+    if (numberBuffer.length === 0 && numbers.length === 0) return;
+    else if (numberBuffer.length === 0 && numbers.length > 0){
+        numbers[0] = Math.floor(numbers[0] / 10);
+    }
+    //numbers[0].shift()
+    numberBuffer.shift();
+    updateDisplay();
+}
+
+// This function Checks if the pressed key is one of the operators / numbers / other buttons that are available in tis calculator.
 function handleKeyboardPress(event) {
-    const keyPressed = event.key;
-    console.log(keyPressed);
-
-    const operators = operatorsList.some((operator) => operator === keyPressed)
-    const numbers = numbersList.some((number) => number === keyPressed);
-
     switch(true) {
-        case operators:
-            handleOperatorButtonClick(keyPressed);
-            console.log('works');
+        case operatorsList.some((operator) => operator === event.key): // This case returns true or false if the pressed key is in the operators listed above.
+            handleOperatorButtonClick(event.key);
             break;
-        case numbers:
-            console.log('worked here to!')
-            handleNumberButtonClick(keyPressed);
+        case numbersList.some((number) => number === event.key): // This case returns true or false if the pressed key is in the numbers listed above.
+            handleNumberButtonClick(event.key);
             break;
-        case keyPressed === '.':
+        case event.key === '.':
             handleDecimalButtonClick();
             break;
-        case keyPressed === 'Enter':
+        case event.key === 'Enter':
             handleEnterButtonClick();
+            break;
+        case event.key === 'Backspace':
+            handleDeleteButtonClick();
             break;
     }
 }
-
-/*
-function handleKeyboardPress(event) {
-    const keyPressed = event.key;
-    console.log(keyPressed);
-
-    switch(keyPressed) {
-        case operatorsList.some((operator) => operator === keyPressed):
-            handleOperatorButtonClick(keyPressed);
-            break;
-        case numbersList.some((number) => number === keyPressed):
-            handleNumberButtonClick(keyPressed);
-            break;
-        case keyPressed === '.':
-            handleDecimalButtonClick();
-            break;
-        case keyPressed === 'Enter':
-            handleEnterButtonClick();
-            break;
-    }
-}
-*/
 
 function handleNumberButtonClick(event) {
     let number;
-    console.log(typeof event); // REMOVE LATER
-    typeof event === 'object' ? number = event.target.value : number = event;
-
-    console.log(`number: ${number}, numberBuffer: ${numberBuffer}`); // REMOVE this later, its being used just to test the switch case
-
+    typeof event === 'object' ? number = event.target.value : number = event; // This checks if the event is coming from Keyboard or Button.
     numberBuffer.push(number);
     updateDisplay();
 }
@@ -93,14 +75,11 @@ function handleNumberButtonClick(event) {
 function handleOperatorButtonClick(event) {
     if (numberBuffer.length > 0) {
         numbers.push(parseFloat(numberBuffer.join('')));
-
         numberBuffer.length = 0;
         performCalculation();
     }
-    console.log(typeof event); // REMOVE THIS LATER
-
-    typeof event === 'object' ? currentOperator = event.target.value : currentOperator = event;
-
+    typeof event === 'object' ? currentOperator = event.target.value : currentOperator = event; // This checks if the event is coming from Keyboard or Button.
+    updateHistory((`${numbers} ${currentOperator}`));
 }
 
 function handleDecimalButtonClick() {
