@@ -9,7 +9,7 @@ const clearButton = document.querySelector('.btn.clear');
 
 const numberBuffer = [];
 const numbers = [];
-const operators = ['add', 'subtract', 'multiply', 'divide'];
+//const operators = ['add', 'subtract', 'multiply', 'divide'];
 
 let currentOperator;
 let history;
@@ -28,10 +28,7 @@ decimalButton.addEventListener('click', handleDecimalButtonClick);
 enterButton.addEventListener('click', handleEnterButtonClick);
 clearButton.addEventListener('click', handleClearButtonClick);
 
-function getHistory(history) {
-    displayHistory.textContent = `${history}`
-}
-
+// Suport Functions
 function handleNumberButtonClick(event) {
     const number = event.target.value;
     numberBuffer.push(number);
@@ -41,7 +38,9 @@ function handleNumberButtonClick(event) {
 function handleOperatorButtonClick(event) {
     if (numberBuffer.length > 0) {
         numbers.push(parseFloat(numberBuffer.join('')));
+        
         numberBuffer.length = 0;
+        performCalculation();
     }
     currentOperator = event.target.value;
 }
@@ -66,12 +65,12 @@ function handleClearButtonClick() {
     numbers.length = 0;
     history = '';
 
-    getHistory(history)
+    updateHistory(history)
     updateDisplay();
 }
 
 function performCalculation() {
-    if (numbers.length < 2 || !currentOperator) {
+    if (numbers.length < 2 || !currentOperator) { // This codition is used to capture when users are trying to perform a calculation with only 1 number.
         return;
     }
 
@@ -99,11 +98,15 @@ function performCalculation() {
     }
 
     numbers.unshift(result);
-    console.log(numbers);
     updateDisplay();
-    getHistory(history);
+    updateHistory(history);
 }
 
 function updateDisplay() {
     displayElement.textContent = numberBuffer.length > 0 ? numberBuffer.join('') : numbers[0] || '';
 }
+
+function updateHistory(history) {
+    displayHistory.textContent = `${history}`
+}
+
