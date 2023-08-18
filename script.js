@@ -9,7 +9,8 @@ const clearButton = document.querySelector('.btn.clear');
 
 const numberBuffer = [];
 const numbers = [];
-//const operators = ['add', 'subtract', 'multiply', 'divide'];
+const operatorsList = ['+', '-', '*', '/'];
+const numbersList = [0,1,2,3,4,'5',6,7,8,9];
 
 let currentOperator;
 let history;
@@ -27,21 +28,73 @@ operatorButtons.forEach(button => {
 decimalButton.addEventListener('click', handleDecimalButtonClick);
 enterButton.addEventListener('click', handleEnterButtonClick);
 clearButton.addEventListener('click', handleClearButtonClick);
+window.addEventListener("keydown", handleKeyboardPress);
 
 // Suport Functions
+
+function handleKeyboardPress(event) {
+    const keyPressed = event.key;
+    const keyParsed = parseFloat(keyPressed);
+    console.log(keyPressed);
+
+    const operators = operatorsList.some((operator) => operator === keyPressed)
+    const numbers = numbersList.some((number) => number === keyPressed);
+
+    switch(true) {
+        case operators:
+            handleOperatorButtonClick(keyPressed);
+            console.log('works');
+            break;
+        case numbers:
+            console.log('worked here to!')
+            handleNumberButtonClick(event);
+            break;
+        case keyPressed === '.':
+            handleDecimalButtonClick();
+            break;
+        case keyPressed === 'Enter':
+            handleEnterButtonClick();
+            break;
+    }
+}
+
+/*
+function handleKeyboardPress(event) {
+    const keyPressed = event.key;
+    console.log(keyPressed);
+
+    switch(keyPressed) {
+        case operatorsList.some((operator) => operator === keyPressed):
+            handleOperatorButtonClick(keyPressed);
+            break;
+        case numbersList.some((number) => number === keyPressed):
+            handleNumberButtonClick(keyPressed);
+            break;
+        case keyPressed === '.':
+            handleDecimalButtonClick();
+            break;
+        case keyPressed === 'Enter':
+            handleEnterButtonClick();
+            break;
+    }
+}
+*/
+
 function handleNumberButtonClick(event) {
     const number = event.target.value;
     numberBuffer.push(number);
+    console.log(`number: ${number}, numberBuffer: ${numberBuffer}`); // REMOVE this later, its being used just to test the switch case
     updateDisplay();
 }
 
 function handleOperatorButtonClick(event) {
     if (numberBuffer.length > 0) {
         numbers.push(parseFloat(numberBuffer.join('')));
-        
+
         numberBuffer.length = 0;
         performCalculation();
     }
+    console.log(event); // REMOVE THIS LATTER
     currentOperator = event.target.value;
 }
 
@@ -79,19 +132,19 @@ function performCalculation() {
     let result;
 
     switch (currentOperator) {
-        case 'add':
+        case '+':
             result = num1 + num2;
             history = `${num1} + ${num2}`;
             break;
-        case 'subtract':
+        case '-':
             result = num1 - num2;
             history = `${num1} - ${num2}`;
             break;
-        case 'multiply':
+        case '*':
             result = num1 * num2;
             history = `${num1} * ${num2}`;
             break;
-        case 'divide':
+        case '/':
             result = num1 / num2;
             history = `${num1} / ${num2}`;
             break;
