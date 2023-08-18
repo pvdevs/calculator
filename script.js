@@ -1,5 +1,6 @@
 // Get references to the HTML elements
 const displayElement = document.querySelector('.result');
+const displayHistory = document.querySelector('.history');
 const numberButtons = document.querySelectorAll('.btn.number');
 const operatorButtons = document.querySelectorAll('.btn.operator');
 const decimalButton = document.querySelector('.btn.decimal');
@@ -11,7 +12,7 @@ const numbers = [];
 const operators = ['add', 'subtract', 'multiply', 'divide'];
 
 let currentOperator;
-
+let history;
 
 // Attach event listeners to the classes with multiple buttons
 numberButtons.forEach(button => {
@@ -26,6 +27,10 @@ operatorButtons.forEach(button => {
 decimalButton.addEventListener('click', handleDecimalButtonClick);
 enterButton.addEventListener('click', handleEnterButtonClick);
 clearButton.addEventListener('click', handleClearButtonClick);
+
+function getHistory(history) {
+    displayHistory.textContent = `${history}`
+}
 
 function handleNumberButtonClick(event) {
     const number = event.target.value;
@@ -59,6 +64,9 @@ function handleEnterButtonClick() {
 function handleClearButtonClick() {
     numberBuffer.length = 0;
     numbers.length = 0;
+    history = '';
+
+    getHistory(history)
     updateDisplay();
 }
 
@@ -74,21 +82,26 @@ function performCalculation() {
     switch (currentOperator) {
         case 'add':
             result = num1 + num2;
+            history = `${num1} + ${num2}`;
             break;
         case 'subtract':
             result = num1 - num2;
+            history = `${num1} - ${num2}`;
             break;
         case 'multiply':
             result = num1 * num2;
+            history = `${num1} * ${num2}`;
             break;
         case 'divide':
             result = num1 / num2;
+            history = `${num1} / ${num2}`;
             break;
     }
 
     numbers.unshift(result);
     console.log(numbers);
     updateDisplay();
+    getHistory(history);
 }
 
 function updateDisplay() {
