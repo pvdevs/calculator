@@ -10,7 +10,7 @@ const clearButton = document.querySelector('.btn.clear');
 const numberBuffer = [];
 const numbers = [];
 const operatorsList = ['+', '-', '*', '/'];
-const numbersList = [0,1,2,3,4,'5',6,7,8,9];
+const numbersList = ['0','1','2','3','4','5','6','7','8','9'];
 
 let currentOperator;
 let history;
@@ -34,7 +34,6 @@ window.addEventListener("keydown", handleKeyboardPress);
 
 function handleKeyboardPress(event) {
     const keyPressed = event.key;
-    const keyParsed = parseFloat(keyPressed);
     console.log(keyPressed);
 
     const operators = operatorsList.some((operator) => operator === keyPressed)
@@ -47,7 +46,7 @@ function handleKeyboardPress(event) {
             break;
         case numbers:
             console.log('worked here to!')
-            handleNumberButtonClick(event);
+            handleNumberButtonClick(keyPressed);
             break;
         case keyPressed === '.':
             handleDecimalButtonClick();
@@ -81,9 +80,13 @@ function handleKeyboardPress(event) {
 */
 
 function handleNumberButtonClick(event) {
-    const number = event.target.value;
-    numberBuffer.push(number);
+    let number;
+    console.log(typeof event); // REMOVE LATER
+    typeof event === 'object' ? number = event.target.value : number = event;
+
     console.log(`number: ${number}, numberBuffer: ${numberBuffer}`); // REMOVE this later, its being used just to test the switch case
+
+    numberBuffer.push(number);
     updateDisplay();
 }
 
@@ -94,8 +97,10 @@ function handleOperatorButtonClick(event) {
         numberBuffer.length = 0;
         performCalculation();
     }
-    console.log(event); // REMOVE THIS LATTER
-    currentOperator = event.target.value;
+    console.log(typeof event); // REMOVE THIS LATER
+
+    typeof event === 'object' ? currentOperator = event.target.value : currentOperator = event;
+
 }
 
 function handleDecimalButtonClick() {
