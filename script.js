@@ -16,8 +16,8 @@ const numbersList = ['0','1','2','3','4','5','6','7','8','9'];
 let currentOperator;
 let history;
 let decimalBuffer = false;
-let enter;
-let operationResult;
+let enter = false;
+let operationResult = null;
 let keep = false;
 
 // Attach event listeners to the classes with multiple buttons
@@ -42,6 +42,8 @@ function handleNumberButtonClick(event) {
     const last = numberBuffer.length -1;
     const decimal = numberBuffer.indexOf('.');
 
+    console.log(` handle number! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
+
     console.log(last - decimal);
 
     if(decimalBuffer && last - decimal >= 1) return;
@@ -56,7 +58,11 @@ function handleNumberButtonClick(event) {
 function handleOperatorButtonClick(event) {
     decimalBuffer = false;
 
+    console.log(` handle operator! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
+
     if(numberBuffer.length === 0 && keep === true) numberBuffer.push(operationResult);
+
+    if(operationResult != null && numbers.length === 0) numberBuffer.push(operationResult);
 
     if (numberBuffer.length > 0) {
         numbers.push(parseFloat(numberBuffer.join('')));
@@ -99,6 +105,7 @@ function handleEnterButtonClick() {
         numbers.push(parseFloat(numberBuffer.join('')));
         numberBuffer.length = 0;
     }
+    console.log(` handle enter! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
     performCalculation();
 }
 
@@ -166,14 +173,20 @@ function performCalculation() {
     } else {
         continueOperation(result)
     }
+
+   console.log(` perform calculation! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
 }
 
 function resetOperation(result) {
     operationResult = result;
+
     keep = true;
     updateDisplay(result);
     updateHistory(history);
     enter = false
+
+  //  operationResult = null;
+    keep = false;
 }
 
 function continueOperation(result) {
@@ -181,4 +194,5 @@ function continueOperation(result) {
     numbers.unshift(result);
     updateDisplay(numbers[0]);
     updateHistory(history);
+    operationResult = null;
 }
