@@ -15,6 +15,7 @@ const numbersList = ['0','1','2','3','4','5','6','7','8','9'];
 
 let currentOperator;
 let history;
+let decimalBuffer = false;
 
 // Attach event listeners to the classes with multiple buttons
 numberButtons.forEach(button => button.addEventListener('click', handleNumberButtonClick));
@@ -32,6 +33,18 @@ window.addEventListener("keydown", handleKeyboardPress);
 
 // Suport Functions
 function handleNumberButtonClick(event) {
+  //  console.log(numberBuffer);
+
+    const last = numberBuffer.length -1;
+    const decimal = numberBuffer.indexOf('.');
+
+    console.log(last - decimal);
+
+    if(decimalBuffer && last - decimal >= 1) return;
+
+
+    //if (decimalBuffer)
+    
     let number;
     typeof event === 'object' ? number = event.target.value : number = event; // This checks if the event is coming from Keyboard or Button.
     numberBuffer.push(number);
@@ -50,6 +63,7 @@ function handleOperatorButtonClick(event) {
 
 function handleDecimalButtonClick() {
     if (!numberBuffer.includes('.')) {
+        decimalBuffer = true;
         numberBuffer.push('.');
         updateDisplay();
     }
@@ -67,9 +81,9 @@ function handleClearButtonClick() {
 function handleDeleteButtonClick() {
     if (numberBuffer.length === 0 && numbers.length === 0) return;
     else if (numberBuffer.length === 0 && numbers.length > 0){
-        numbers[0] = Math.floor(numbers[0] / 10);
+        numbers[0] = numbers.toString().slice(0, -1);
     }
-    numberBuffer.shift();
+    numberBuffer.pop()
     updateDisplay();
 }
 
