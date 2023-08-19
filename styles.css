@@ -1,6 +1,119 @@
-button {
-    width: 100px;
-    height: 100px;
-    font-size: 24px;
-    font-weight: 700;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    color : #0c0c0c;
+    background-color: #f2f2f2;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    align-items: center;
+    gap: 16px;
 }
+
+button {
+    height: 64px;
+    width: 64px;
+    font-size: 18px;
+    font-weight: 700;
+    transition: ease-in-out;
+}
+
+.calculator {
+    margin-top: 112px;
+    width: 304px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    background-color: #4c4c54;
+    border: solid #0c0c0c 1px;
+    border-radius: 4px;
+    gap: 16px;
+}
+
+.display {
+    padding: 16px;
+    height: 96px;
+    border: solid #0c0c0c 1px;
+    background-color: #d8d4c8;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    font-weight: 700;
+    color: #000000;
+    gap: 8px;
+}
+
+.history {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.result {
+    font-size: 32px;
+}
+
+
+.buttons {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;  
+}
+
+.btn {
+    background: #d8d4c8;
+    color: inherit;
+    border: solid #0c0c0c 1px;
+    padding: 16px;
+    font: inherit;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    outline: inherit;
+    flex: auto;
+}
+
+.btn.larger {
+    width: 144px;
+}
+
+#cta {
+    background-color: #fc6d42;
+}
+
+button:hover {
+    filter: brightness(90%);
+}
+
+button:active, button :focus {
+    filter: brightness(70%);
+}
+
+.find-me {
+    margin-top: auto;
+    padding: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.find-me p {
+    margin: 0;
+    font-size: 20px;
+    color: #363636;
+}
+
+.fa-github {
+    color: #363636;
+    transition: transform 0.3s ease-in-out;
+}
+
+.fa-github:hover {
+    transform: scale(1.1);
+    color: #fc6d42;
+  }

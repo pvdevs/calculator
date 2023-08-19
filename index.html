@@ -6,33 +6,43 @@
     <title>Calculator</title>
     <script src="./script.js" defer></script>
     <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <h1>CALCULATOR!</h1>
     <div class="calculator">
-        <div class="history">current operations:</div>
-        <div class="result">result:</div>
+        <div class="display">
+            <div class="history"></div>
+            <div class="result"></div>
+        </div>
+
         <div class="buttons">
-            <button class="btn number" value="0">0</button>
-            <button class="btn number" value="1">1</button>
-            <button class="btn number" value="2">2</button>
-            <button class="btn number" value="3">3</button>
-            <button class="btn number" value="4">4</button>
-            <button class="btn number" value="5">5</button>
-            <button class="btn number" value="6">6</button>
+            <button class="btn clear larger" value="clear">CA</button>
+            <button class="btn delete" value="delete">CE</button>
+            <button class="btn operator" value="/">/</button>
+
             <button class="btn number" value="7">7</button>
             <button class="btn number" value="8">8</button>
             <button class="btn number" value="9">9</button>
+            <button class="btn operator" value="*">x</button>
 
-            <button class="btn clear" value="clear">Clear</button>
-            <button class="btn enter" value="enter">Enter</button>
-            <button class="btn delete" value="delete">Delete</button>   
-            <button class="btn operator" value="+">+</button>
+            <button class="btn number" value="4">4</button>
+            <button class="btn number" value="5">5</button>
+            <button class="btn number" value="6">6</button>
             <button class="btn operator" value="-">-</button>
-            <button class="btn operator" value="*">*</button>
-            <button class="btn operator" value="/">/</button>
+        
+            <button class="btn number" value="3">3</button>
+            <button class="btn number" value="2">2</button>
+            <button class="btn number" value="1">1</button>
+            <button class="btn operator" value="+">+</button>
+            
+            <button class="btn number larger" value="0">0</button>
             <button class="btn decimal" value=".">.</button>
+            <button class="btn enter" id="cta" value="enter">=</button>                                    
         </div>
     </div>
+<div class="find-me">
+    <p> Built and designed by pvdevs</p>
+    <a href="https://github.com/pvdevs" target="_blank"><i class="fa fa-github" style="font-size:32px"></i></a>
+</div>
 </body>
 </html>

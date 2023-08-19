@@ -99,6 +99,9 @@ function handleKeyboardPress(event) {
         case event.key === 'Backspace':
             handleDeleteButtonClick();
             break;
+        case event.key === 'c':
+            handleClearButtonClick();
+            break;
     }
 }
 
