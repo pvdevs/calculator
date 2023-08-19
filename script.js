@@ -16,6 +16,9 @@ const numbersList = ['0','1','2','3','4','5','6','7','8','9'];
 let currentOperator;
 let history;
 let decimalBuffer = false;
+let enter;
+let operationResult;
+let keep = false;
 
 // Attach event listeners to the classes with multiple buttons
 numberButtons.forEach(button => button.addEventListener('click', handleNumberButtonClick));
@@ -34,6 +37,7 @@ window.addEventListener("keydown", handleKeyboardPress);
 // Suport Functions
 function handleNumberButtonClick(event) {
   //  console.log(numberBuffer);
+    let number;
 
     const last = numberBuffer.length -1;
     const decimal = numberBuffer.indexOf('.');
@@ -41,17 +45,19 @@ function handleNumberButtonClick(event) {
     console.log(last - decimal);
 
     if(decimalBuffer && last - decimal >= 1) return;
-
-
-    //if (decimalBuffer)
+    if(numbers.length > 0) console.log(numbers);
     
-    let number;
     typeof event === 'object' ? number = event.target.value : number = event; // This checks if the event is coming from Keyboard or Button.
     numberBuffer.push(number);
-    updateDisplay();
+
+    updateDisplay(numbers[0]);
 }
 
 function handleOperatorButtonClick(event) {
+    decimalBuffer = false;
+
+    if(numberBuffer.length === 0 && keep === true) numberBuffer.push(operationResult);
+
     if (numberBuffer.length > 0) {
         numbers.push(parseFloat(numberBuffer.join('')));
         numberBuffer.length = 0;
@@ -65,7 +71,7 @@ function handleDecimalButtonClick() {
     if (!numberBuffer.includes('.')) {
         decimalBuffer = true;
         numberBuffer.push('.');
-        updateDisplay();
+        updateDisplay(numbers[0]);
     }
 }
 
@@ -75,7 +81,7 @@ function handleClearButtonClick() {
     history = '';
 
     updateHistory(history)
-    updateDisplay();
+    updateDisplay(numbers[0]);
 }
 
 function handleDeleteButtonClick() {
@@ -84,10 +90,11 @@ function handleDeleteButtonClick() {
         numbers[0] = numbers.toString().slice(0, -1);
     }
     numberBuffer.pop()
-    updateDisplay();
+    updateDisplay(numbers[0]);
 }
 
 function handleEnterButtonClick() {
+    enter = true;
     if (numberBuffer.length > 0) {
         numbers.push(parseFloat(numberBuffer.join('')));
         numberBuffer.length = 0;
@@ -108,6 +115,7 @@ function handleKeyboardPress(event) {
             handleDecimalButtonClick();
             break;
         case event.key === 'Enter':
+            enter = true;
             handleEnterButtonClick();
             break;
         case event.key === 'Backspace':
@@ -119,8 +127,8 @@ function handleKeyboardPress(event) {
     }
 }
 
-function updateDisplay() {
-    displayElement.textContent = numberBuffer.length > 0 ? numberBuffer.join('') : numbers[0] || '';
+function updateDisplay(num) {
+    displayElement.textContent = numberBuffer.length > 0 ? numberBuffer.join('') : num || '';
 }
 
 function updateHistory(history) {
@@ -152,7 +160,25 @@ function performCalculation() {
             history = `${num1} / ${num2}`;
             break;
     }
+
+    if(enter === true) {
+        resetOperation(result)
+    } else {
+        continueOperation(result)
+    }
+}
+
+function resetOperation(result) {
+    operationResult = result;
+    keep = true;
+    updateDisplay(result);
+    updateHistory(history);
+    enter = false
+}
+
+function continueOperation(result) {
+    keep = false;
     numbers.unshift(result);
-    updateDisplay();
+    updateDisplay(numbers[0]);
     updateHistory(history);
 }
