@@ -15,10 +15,10 @@ const numbersList = ['0','1','2','3','4','5','6','7','8','9'];
 
 let currentOperator;
 let history;
-let decimalBuffer = false;
+let decimalIsPresent = false;
 let enter = false;
 let operationResult = null;
-let keep = false;
+let operationKeepsGoing = true;
 
 // Attach event listeners to the classes with multiple buttons
 numberButtons.forEach(button => button.addEventListener('click', handleNumberButtonClick));
@@ -26,8 +26,8 @@ operatorButtons.forEach(button => button.addEventListener('click', handleOperato
 
 // Attach event listeners to one button classes
 decimalButton.addEventListener('click', handleDecimalButtonClick);
-clearButton.addEventListener('click', handleClearButtonClick);
-deleteButton.addEventListener('click', handleDeleteButtonClick);
+clearButton.addEventListener('click', handleClearAllButtonClick);
+deleteButton.addEventListener('click', handleClearElementButtonClick);
 enterButton.addEventListener('click', handleEnterButtonClick);
 
 // Attach event listener to keyboard events
@@ -41,7 +41,7 @@ function handleNumberButtonClick(event) {
     const BufferLastItem = numberBuffer.length -1;
     const decimalPosition = numberBuffer.indexOf('.');
 
-    if(decimalBuffer && BufferLastItem - decimalPosition >= 1) return; // Checks if user is trying to input more than one element as decimal (limit is one)
+    if(decimalIsPresent && BufferLastItem - decimalPosition >= 1) return; // Checks if user is trying to input more than one element as decimal (limit is one)
 
     typeof event === 'object' ? eventCatcher = event.target.value : eventCatcher = event; // Checks if the event is coming from Keyboard or Button.
     
@@ -50,17 +50,17 @@ function handleNumberButtonClick(event) {
 }
 
 function handleOperatorButtonClick(event) {
-    decimalBuffer = false;
+    decimalIsPresent = false;
 
-    if(numberBuffer.length > 0 && keep === true) {
+    if(numberBuffer.length > 0 && operationKeepsGoing === false) {
         operationResult = null;
-        keep = false;
+        operationKeepsGoing = true;
     }
 
-    if(numberBuffer.length === 0 && keep === true) {
+    if(numberBuffer.length === 0 && operationKeepsGoing === false) {
         numberBuffer.push(operationResult); //
-        operationResult = null;
-        keep = false; //
+        operationResult = null; 
+        operationKeepsGoing = true; //
     }
 
     if(operationResult != null && numbers.length === 0) numberBuffer.push(operationResult);
@@ -72,37 +72,32 @@ function handleOperatorButtonClick(event) {
     }
     typeof event === 'object' ? currentOperator = event.target.value : currentOperator = event; // This checks if the event is coming from Keyboard or Button.
     updateHistory((`${numbers} ${currentOperator}`));
-
-    console.log(` handle operator LATE! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult} \n Keep -> ${keep}`); // REMOVE LATER
 }
 
 
 
 function handleDecimalButtonClick() {
     if (!numberBuffer.includes('.')) {
-        decimalBuffer = true;
+        decimalIsPresent = true;
         numberBuffer.push('.');
         updateDisplay(numbers[0]);
     }
 }
 
-function handleClearButtonClick() {
+function handleClearAllButtonClick() {
     numberBuffer.length = 0;
     numbers.length = 0;
     history = '';
     operationResult = null;
-    decimalBuffer = false;
+    decimalIsPresent = false;
 
     updateHistory(history)
     updateDisplay(numbers[0]);
 }
 
-function handleDeleteButtonClick() {
-
-    console.log(numberBuffer); // remove this later
-    
+function handleClearElementButtonClick() {    
     if (numberBuffer.length === 0 && operationResult != null){
-        operationResult = operationResult.toString().slice(0, -1);
+        operationResult = operationResult.toString().slice(0, -1); // Erases operationResult last element
         numberBuffer.pop;
         updateDisplay(operationResult);
         return;
@@ -116,13 +111,13 @@ function handleDeleteButtonClick() {
     updateDisplay(numbers[0]);
     
     if (numberBuffer.some((e) => e === '.') === false) {
-        decimalBuffer = false;
+        decimalIsPresent = false;
     }
 
 }
 
 function handleEnterButtonClick() {
-    decimalBuffer = false;
+    decimalIsPresent = false;
 
     enter = true;
     if (numberBuffer.length > 0) {
@@ -149,10 +144,10 @@ function handleKeyboardPress(event) {
             handleEnterButtonClick();
             break;
         case event.key === 'Backspace':
-            handleDeleteButtonClick();
+            handleClearElementButtonClick();
             break;
         case event.key === 'c':
-            handleClearButtonClick();
+            handleClearAllButtonClick();
             break;
     }
 }
@@ -200,20 +195,18 @@ function performCalculation() {
     } else {
         continueOperation(result)
     }
-
-   console.log(` perform calculation! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult} \n Operator -> ${currentOperator}`); // REMOVE LATER
 }
 
 function resetOperation(result) {
     operationResult = result;
-    keep = true;
+    operationKeepsGoing = false;
     updateDisplay(result);
     updateHistory(history);
     enter = false
 }
 
 function continueOperation(result) {
-    keep = false;
+    operationKeepsGoing = true;
     numbers.unshift(result);
     updateDisplay(numbers[0]);
     updateHistory(history);
