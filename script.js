@@ -36,38 +36,31 @@ window.addEventListener("keydown", handleKeyboardPress);
 
 // Suport Functions
 function handleNumberButtonClick(event) {
-  //  console.log(numberBuffer);
-    let number;
+    let eventCatcher;
 
-    const last = numberBuffer.length -1;
-    const decimal = numberBuffer.indexOf('.');
+    const BufferLastItem = numberBuffer.length -1;
+    const decimalPosition = numberBuffer.indexOf('.');
 
-    console.log(` handle number! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult} \n Keep -> ${keep}`); // REMOVE LATER
-    console.log(last - decimal);
+    if(decimalBuffer && BufferLastItem - decimalPosition >= 1) return; // Checks if user is trying to input more than one element as decimal (limit is one)
 
-    if(decimalBuffer && last - decimal >= 1) return;
-    if(numbers.length > 0) console.log(numbers);
+    typeof event === 'object' ? eventCatcher = event.target.value : eventCatcher = event; // Checks if the event is coming from Keyboard or Button.
     
-    typeof event === 'object' ? number = event.target.value : number = event; // This checks if the event is coming from Keyboard or Button.
-    numberBuffer.push(number);
-
+    numberBuffer.push(eventCatcher);
     updateDisplay(numbers[0]);
 }
 
 function handleOperatorButtonClick(event) {
     decimalBuffer = false;
 
-    console.log(` handle operator! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult} \n Keep -> ${keep}`); // REMOVE LATER
-
     if(numberBuffer.length > 0 && keep === true) {
         operationResult = null;
-        keep = false; // test
+        keep = false;
     }
 
     if(numberBuffer.length === 0 && keep === true) {
-        numberBuffer.push(operationResult); // Test W/ Unshift again!
+        numberBuffer.push(operationResult); //
         operationResult = null;
-        keep = false; // test
+        keep = false; //
     }
 
     if(operationResult != null && numbers.length === 0) numberBuffer.push(operationResult);
@@ -86,7 +79,6 @@ function handleOperatorButtonClick(event) {
 
 
 function handleDecimalButtonClick() {
-    console.log(` handle decimal! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
     if (!numberBuffer.includes('.')) {
         decimalBuffer = true;
         numberBuffer.push('.');
@@ -99,6 +91,7 @@ function handleClearButtonClick() {
     numbers.length = 0;
     history = '';
     operationResult = null;
+    decimalBuffer = false;
 
     updateHistory(history)
     updateDisplay(numbers[0]);
@@ -106,10 +99,9 @@ function handleClearButtonClick() {
 
 function handleDeleteButtonClick() {
 
-    console.log(` handle operator! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
-
+    console.log(numberBuffer); // remove this later
+    
     if (numberBuffer.length === 0 && operationResult != null){
-        console.log(` handle operator INSIDE! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
         operationResult = operationResult.toString().slice(0, -1);
         numberBuffer.pop;
         updateDisplay(operationResult);
@@ -122,15 +114,21 @@ function handleDeleteButtonClick() {
     }
     numberBuffer.pop()
     updateDisplay(numbers[0]);
+    
+    if (numberBuffer.some((e) => e === '.') === false) {
+        decimalBuffer = false;
+    }
+
 }
 
 function handleEnterButtonClick() {
+    decimalBuffer = false;
+
     enter = true;
     if (numberBuffer.length > 0) {
         numbers.push(parseFloat(numberBuffer.join('')));
         numberBuffer.length = 0;
     }
-    console.log(` handle enter! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult} \n Keep -> ${keep}`); // REMOVE LATER
     performCalculation();
 }
 
@@ -208,15 +206,10 @@ function performCalculation() {
 
 function resetOperation(result) {
     operationResult = result;
-
     keep = true;
     updateDisplay(result);
     updateHistory(history);
-    console.log(` handle operator! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult} \n Keep -> ${keep}`); // REMOVE LATER
     enter = false
-
-  //  operationResult = null;
- //   keep = false; May have to turn this on again later
 }
 
 function continueOperation(result) {
