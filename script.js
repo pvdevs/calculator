@@ -58,9 +58,9 @@ function handleNumberButtonClick(event) {
 function handleOperatorButtonClick(event) {
     decimalBuffer = false;
 
-    console.log(` handle operator! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
+    console.log(` handle operator! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult} \n Keep -> ${keep}`); // REMOVE LATER
 
-    if(numberBuffer.length === 0 && keep === true) numberBuffer.push(operationResult);
+    if(numberBuffer.length === 0 && keep === true) numberBuffer.push(operationResult); // Test W/ Unshift again!
 
     if(operationResult != null && numbers.length === 0) numberBuffer.push(operationResult);
 
@@ -74,6 +74,7 @@ function handleOperatorButtonClick(event) {
 }
 
 function handleDecimalButtonClick() {
+    console.log(` handle decimal! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
     if (!numberBuffer.includes('.')) {
         decimalBuffer = true;
         numberBuffer.push('.');
@@ -85,13 +86,25 @@ function handleClearButtonClick() {
     numberBuffer.length = 0;
     numbers.length = 0;
     history = '';
+    operationResult = null;
 
     updateHistory(history)
     updateDisplay(numbers[0]);
 }
 
 function handleDeleteButtonClick() {
-    if (numberBuffer.length === 0 && numbers.length === 0) return;
+
+    console.log(` handle operator! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
+
+    if (numberBuffer.length === 0 && operationResult != null){
+        console.log(` handle operator INSIDE! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
+        operationResult = operationResult.toString().slice(0, -1);
+        numberBuffer.pop;
+        updateDisplay(operationResult);
+        return;
+    }
+
+    else if(numberBuffer.length === 0 && numbers.length === 0) return;
     else if (numberBuffer.length === 0 && numbers.length > 0){
         numbers[0] = numbers.toString().slice(0, -1);
     }
@@ -139,7 +152,7 @@ function updateDisplay(num) {
 }
 
 function updateHistory(history) {
-    displayHistory.textContent = `${history}`
+    displayHistory.textContent = `${history}`;
 }
 
 function performCalculation() {
