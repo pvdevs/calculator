@@ -6,7 +6,7 @@ const operatorButtons = document.querySelectorAll('.btn.operator');
 const decimalButton = document.querySelector('.btn.decimal');
 const enterButton = document.querySelector('.btn.enter');
 const clearButton = document.querySelector('.btn.clear');
-const deleteButton = document.querySelector('.btn.delete')
+const deleteButton = document.querySelector('.btn.delete');
 
 const numberBuffer = [];
 const numbers = [];
@@ -17,54 +17,20 @@ let currentOperator;
 let history;
 
 // Attach event listeners to the classes with multiple buttons
-numberButtons.forEach(button => {
-    button.addEventListener('click', handleNumberButtonClick);
-});
-
-operatorButtons.forEach(button => {
-    button.addEventListener('click', handleOperatorButtonClick);
-});
+numberButtons.forEach(button => button.addEventListener('click', handleNumberButtonClick));
+operatorButtons.forEach(button => button.addEventListener('click', handleOperatorButtonClick));
 
 // Attach event listeners to one button classes
 decimalButton.addEventListener('click', handleDecimalButtonClick);
-enterButton.addEventListener('click', handleEnterButtonClick);
 clearButton.addEventListener('click', handleClearButtonClick);
 deleteButton.addEventListener('click', handleDeleteButtonClick);
+enterButton.addEventListener('click', handleEnterButtonClick);
+
+// Attach event listener to keyboard events
 window.addEventListener("keydown", handleKeyboardPress);
 
+
 // Suport Functions
-
-function handleDeleteButtonClick() {
-    if (numberBuffer.length === 0 && numbers.length === 0) return;
-    else if (numberBuffer.length === 0 && numbers.length > 0){
-        numbers[0] = Math.floor(numbers[0] / 10);
-    }
-    //numbers[0].shift()
-    numberBuffer.shift();
-    updateDisplay();
-}
-
-// This function Checks if the pressed key is one of the operators / numbers / other buttons that are available in tis calculator.
-function handleKeyboardPress(event) {
-    switch(true) {
-        case operatorsList.some((operator) => operator === event.key): // This case returns true or false if the pressed key is in the operators listed above.
-            handleOperatorButtonClick(event.key);
-            break;
-        case numbersList.some((number) => number === event.key): // This case returns true or false if the pressed key is in the numbers listed above.
-            handleNumberButtonClick(event.key);
-            break;
-        case event.key === '.':
-            handleDecimalButtonClick();
-            break;
-        case event.key === 'Enter':
-            handleEnterButtonClick();
-            break;
-        case event.key === 'Backspace':
-            handleDeleteButtonClick();
-            break;
-    }
-}
-
 function handleNumberButtonClick(event) {
     let number;
     typeof event === 'object' ? number = event.target.value : number = event; // This checks if the event is coming from Keyboard or Button.
@@ -89,14 +55,6 @@ function handleDecimalButtonClick() {
     }
 }
 
-function handleEnterButtonClick() {
-    if (numberBuffer.length > 0) {
-        numbers.push(parseFloat(numberBuffer.join('')));
-        numberBuffer.length = 0;
-    }
-    performCalculation();
-}
-
 function handleClearButtonClick() {
     numberBuffer.length = 0;
     numbers.length = 0;
@@ -106,10 +64,54 @@ function handleClearButtonClick() {
     updateDisplay();
 }
 
-function performCalculation() {
-    if (numbers.length < 2 || !currentOperator) { // This codition is used to capture when users are trying to perform a calculation with only 1 number.
-        return;
+function handleDeleteButtonClick() {
+    if (numberBuffer.length === 0 && numbers.length === 0) return;
+    else if (numberBuffer.length === 0 && numbers.length > 0){
+        numbers[0] = Math.floor(numbers[0] / 10);
     }
+    numberBuffer.shift();
+    updateDisplay();
+}
+
+function handleEnterButtonClick() {
+    if (numberBuffer.length > 0) {
+        numbers.push(parseFloat(numberBuffer.join('')));
+        numberBuffer.length = 0;
+    }
+    performCalculation();
+}
+
+// This function Checks if the pressed key is one of the operators / numbers / other buttons that are available in tis calculator.
+function handleKeyboardPress(event) {
+    switch(true) {
+        case operatorsList.some((operator) => operator === event.key): // This case returns true or false if the pressed key is in the operators listed above.
+            handleOperatorButtonClick(event.key);
+            break;
+        case numbersList.some((number) => number === event.key): // This case returns true or false if the pressed key is in the numbers listed above.
+            handleNumberButtonClick(event.key);
+            break;
+        case event.key === '.':
+            handleDecimalButtonClick();
+            break;
+        case event.key === 'Enter':
+            handleEnterButtonClick();
+            break;
+        case event.key === 'Backspace':
+            handleDeleteButtonClick();
+            break;
+    }
+}
+
+function updateDisplay() {
+    displayElement.textContent = numberBuffer.length > 0 ? numberBuffer.join('') : numbers[0] || '';
+}
+
+function updateHistory(history) {
+    displayHistory.textContent = `${history}`
+}
+
+function performCalculation() {
+    if (numbers.length < 2 || !currentOperator) return; // This codition is used to capture when users are trying to perform a calculation with only 1 number.
 
     const num1 = numbers.shift();
     const num2 = numbers.shift();
@@ -133,17 +135,7 @@ function performCalculation() {
             history = `${num1} / ${num2}`;
             break;
     }
-
     numbers.unshift(result);
     updateDisplay();
     updateHistory(history);
 }
-
-function updateDisplay() {
-    displayElement.textContent = numberBuffer.length > 0 ? numberBuffer.join('') : numbers[0] || '';
-}
-
-function updateHistory(history) {
-    displayHistory.textContent = `${history}`
-}
-
