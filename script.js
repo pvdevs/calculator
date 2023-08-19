@@ -177,18 +177,22 @@ function performCalculation() {
     switch (currentOperator) {
         case '+':
             result = num1 + num2;
+            result = Math.round(result * 10) / 10
             history = `${num1} + ${num2}`;
             break;
         case '-':
             result = num1 - num2;
+            result = Math.round(result * 10) / 10
             history = `${num1} - ${num2}`;
             break;
         case '*':
             result = num1 * num2;
+            result = Math.round(result * 10) / 10
             history = `${num1} * ${num2}`;
             break;
         case '/':
             result = num1 / num2;
+            result = Math.round(result * 10) / 10
             history = `${num1} / ${num2}`;
             break;
     }
@@ -199,7 +203,7 @@ function performCalculation() {
         continueOperation(result)
     }
 
-   console.log(` perform calculation! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
+   console.log(` perform calculation! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult} \n Operator -> ${currentOperator}`); // REMOVE LATER
 }
 
 function resetOperation(result) {
