@@ -57,12 +57,12 @@ function handleOperatorButtonClick(event) {
     }
 
     if(numberBuffer.length === 0 && operationKeepsGoing === false) {
-        numberBuffer.push(numbers[0]); // talvez seja [0]
-        numbers.length = 0; 
-        operationKeepsGoing = true; //
+        numberBuffer.push(numbers[0]);
+        numbers.length = 0;
+        operationKeepsGoing = true;
     }
 
-    if(numbers.length > 0 && numbers.length === 0) numberBuffer.push(numbers[0]); // talvez precise do [0]
+    if(numbers.length > 0 && numbers.length === 0) numberBuffer.push(numbers[0]);
 
     if (numberBuffer.length > 0) {
         numbers.push(parseFloat(numberBuffer.join('')));
@@ -195,8 +195,7 @@ function resetOperation(result) {
     operationKeepsGoing = false;
     updateDisplay(result);
     updateHistory(history);
-    enter = false
-    numbers.length = 0;
+    enter = false;
 }
 
 function continueOperation(result) {
