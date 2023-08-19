@@ -42,8 +42,7 @@ function handleNumberButtonClick(event) {
     const last = numberBuffer.length -1;
     const decimal = numberBuffer.indexOf('.');
 
-    console.log(` handle number! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
-
+    console.log(` handle number! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult} \n Keep -> ${keep}`); // REMOVE LATER
     console.log(last - decimal);
 
     if(decimalBuffer && last - decimal >= 1) return;
@@ -60,7 +59,16 @@ function handleOperatorButtonClick(event) {
 
     console.log(` handle operator! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult} \n Keep -> ${keep}`); // REMOVE LATER
 
-    if(numberBuffer.length === 0 && keep === true) numberBuffer.push(operationResult); // Test W/ Unshift again!
+    if(numberBuffer.length > 0 && keep === true) {
+        operationResult = null;
+        keep = false; // test
+    }
+
+    if(numberBuffer.length === 0 && keep === true) {
+        numberBuffer.push(operationResult); // Test W/ Unshift again!
+        operationResult = null;
+        keep = false; // test
+    }
 
     if(operationResult != null && numbers.length === 0) numberBuffer.push(operationResult);
 
@@ -71,7 +79,11 @@ function handleOperatorButtonClick(event) {
     }
     typeof event === 'object' ? currentOperator = event.target.value : currentOperator = event; // This checks if the event is coming from Keyboard or Button.
     updateHistory((`${numbers} ${currentOperator}`));
+
+    console.log(` handle operator LATE! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult} \n Keep -> ${keep}`); // REMOVE LATER
 }
+
+
 
 function handleDecimalButtonClick() {
     console.log(` handle decimal! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
@@ -118,7 +130,7 @@ function handleEnterButtonClick() {
         numbers.push(parseFloat(numberBuffer.join('')));
         numberBuffer.length = 0;
     }
-    console.log(` handle enter! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult}`); // REMOVE LATER
+    console.log(` handle enter! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult} \n Keep -> ${keep}`); // REMOVE LATER
     performCalculation();
 }
 
@@ -196,10 +208,11 @@ function resetOperation(result) {
     keep = true;
     updateDisplay(result);
     updateHistory(history);
+    console.log(` handle operator! \n buffer -> ${numberBuffer} \n numbers -> ${numbers} \n OperationResult -> ${operationResult} \n Keep -> ${keep}`); // REMOVE LATER
     enter = false
 
   //  operationResult = null;
-    keep = false;
+ //   keep = false; May have to turn this on again later
 }
 
 function continueOperation(result) {
