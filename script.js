@@ -17,7 +17,6 @@ let currentOperator;
 let history;
 let decimalIsPresent = false;
 let enter = false;
-let operationResult = null;
 let operationKeepsGoing = true;
 
 // Attach event listeners to the classes with multiple buttons
@@ -53,17 +52,17 @@ function handleOperatorButtonClick(event) {
     decimalIsPresent = false;
 
     if(numberBuffer.length > 0 && operationKeepsGoing === false) {
-        operationResult = null;
+        numbers.length = 0;
         operationKeepsGoing = true;
     }
 
     if(numberBuffer.length === 0 && operationKeepsGoing === false) {
-        numberBuffer.push(operationResult); //
-        operationResult = null; 
+        numberBuffer.push(numbers[0]); // talvez seja [0]
+        numbers.length = 0; 
         operationKeepsGoing = true; //
     }
 
-    if(operationResult != null && numbers.length === 0) numberBuffer.push(operationResult);
+    if(numbers.length > 0 && numbers.length === 0) numberBuffer.push(numbers[0]); // talvez precise do [0]
 
     if (numberBuffer.length > 0) {
         numbers.push(parseFloat(numberBuffer.join('')));
@@ -71,7 +70,7 @@ function handleOperatorButtonClick(event) {
         performCalculation();
     }
     typeof event === 'object' ? currentOperator = event.target.value : currentOperator = event; // This checks if the event is coming from Keyboard or Button.
-    updateHistory((`${numbers} ${currentOperator}`));
+    updateHistory((`${numbers[0]} ${currentOperator}`));
 }
 
 
@@ -88,7 +87,6 @@ function handleClearAllButtonClick() {
     numberBuffer.length = 0;
     numbers.length = 0;
     history = '';
-    operationResult = null;
     decimalIsPresent = false;
 
     updateHistory(history)
@@ -96,24 +94,18 @@ function handleClearAllButtonClick() {
 }
 
 function handleClearElementButtonClick() {    
-    if (numberBuffer.length === 0 && operationResult != null){
-        operationResult = operationResult.toString().slice(0, -1); // Erases operationResult last element
+    if (numberBuffer.length === 0 && numbers.length > 0){
+        numbers[0] = numbers.toString().slice(0, -1); // Erases operationResul last element // talvez de bug pq isso eh um array. entao tire toString()
         numberBuffer.pop;
-        updateDisplay(operationResult);
+        updateDisplay(numbers[0]);
         return;
     }
-
     else if(numberBuffer.length === 0 && numbers.length === 0) return;
-    else if (numberBuffer.length === 0 && numbers.length > 0){
-        numbers[0] = numbers.toString().slice(0, -1);
-    }
+    
     numberBuffer.pop()
     updateDisplay(numbers[0]);
     
-    if (numberBuffer.some((e) => e === '.') === false) {
-        decimalIsPresent = false;
-    }
-
+    if (numberBuffer.some((e) => e === '.') === false) decimalIsPresent = false;
 }
 
 function handleEnterButtonClick() {
@@ -190,25 +182,25 @@ function performCalculation() {
             break;
     }
 
+    numbers.unshift(result);
+
     if(enter === true) {
-        resetOperation(result)
+        resetOperation(numbers[0])
     } else {
-        continueOperation(result)
+        continueOperation(numbers[0])
     }
 }
 
 function resetOperation(result) {
-    operationResult = result;
     operationKeepsGoing = false;
     updateDisplay(result);
     updateHistory(history);
     enter = false
+    numbers.length = 0;
 }
 
 function continueOperation(result) {
     operationKeepsGoing = true;
-    numbers.unshift(result);
-    updateDisplay(numbers[0]);
+    updateDisplay(result);
     updateHistory(history);
-    operationResult = null;
 }
