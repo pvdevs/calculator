@@ -1,4 +1,3 @@
-// Get references to the HTML elements
 const displayElement = document.querySelector('.result');
 const displayHistory = document.querySelector('.history');
 const numberButtons = document.querySelectorAll('.btn.number');
@@ -13,25 +12,18 @@ const numbers = [];
 const operatorsList = ['+', '-', '*', '/'];
 const numbersList = ['0','1','2','3','4','5','6','7','8','9'];
 
-let currentOperator;
-let history;
+let currentOperator, history;
 let decimalIsPresent = false;
-let enter = false;
 let operationKeepsGoing = true;
 
-// Attach event listeners to the classes with multiple buttons
 numberButtons.forEach(button => button.addEventListener('click', handleNumberButtonClick));
 operatorButtons.forEach(button => button.addEventListener('click', handleOperatorButtonClick));
 
-// Attach event listeners to one button classes
 decimalButton.addEventListener('click', handleDecimalButtonClick);
 clearButton.addEventListener('click', handleClearAllButtonClick);
 deleteButton.addEventListener('click', handleClearElementButtonClick);
 enterButton.addEventListener('click', handleEnterButtonClick);
-
-// Attach event listener to keyboard events
 window.addEventListener("keydown", handleKeyboardPress);
-
 
 // Suport Functions
 function handleNumberButtonClick(event) {
@@ -45,7 +37,7 @@ function handleNumberButtonClick(event) {
     typeof event === 'object' ? eventCatcher = event.target.value : eventCatcher = event; // Checks if the event is coming from Keyboard or Button.
     
     numberBuffer.push(eventCatcher);
-    updateDisplay(numbers[0]);
+    updateDisplay(numbers[0], history);
 }
 
 function handleOperatorButtonClick(event) {
@@ -67,19 +59,19 @@ function handleOperatorButtonClick(event) {
     if (numberBuffer.length > 0) {
         numbers.push(parseFloat(numberBuffer.join('')));
         numberBuffer.length = 0;
-        performCalculation();
+        performCalculation(continueOperation);
     }
     typeof event === 'object' ? currentOperator = event.target.value : currentOperator = event; // This checks if the event is coming from Keyboard or Button.
-    updateHistory((`${numbers[0]} ${currentOperator}`));
+    
+    history = `${numbers[0]} ${currentOperator}`
+    updateDisplay(numbers[0], `${numbers[0]} ${currentOperator}`);
 }
-
-
 
 function handleDecimalButtonClick() {
     if (!numberBuffer.includes('.')) {
         decimalIsPresent = true;
         numberBuffer.push('.');
-        updateDisplay(numbers[0]);
+        updateDisplay(numbers[0], history);
     }
 }
 
@@ -88,35 +80,30 @@ function handleClearAllButtonClick() {
     numbers.length = 0;
     history = '';
     decimalIsPresent = false;
-
-    updateHistory(history)
-    updateDisplay(numbers[0]);
+    updateDisplay(numbers[0], history);
 }
 
-function handleClearElementButtonClick() {    
+function handleClearElementButtonClick() {
     if (numberBuffer.length === 0 && numbers.length > 0){
-        numbers[0] = numbers.toString().slice(0, -1); // Erases operationResul last element // talvez de bug pq isso eh um array. entao tire toString()
+        numbers[0] = numbers.toString().slice(0, -1); // Erases last element
         numberBuffer.pop;
-        updateDisplay(numbers[0]);
+        updateDisplay(numbers[0], history);
         return;
     }
     else if(numberBuffer.length === 0 && numbers.length === 0) return;
-    
     numberBuffer.pop()
-    updateDisplay(numbers[0]);
-    
+    updateDisplay(numbers[0], history);
     if (numberBuffer.some((e) => e === '.') === false) decimalIsPresent = false;
 }
 
 function handleEnterButtonClick() {
     decimalIsPresent = false;
 
-    enter = true;
     if (numberBuffer.length > 0) {
         numbers.push(parseFloat(numberBuffer.join('')));
         numberBuffer.length = 0;
     }
-    performCalculation();
+    performCalculation(resetOperation);
 }
 
 // This function Checks if the pressed key is one of the operators / numbers / other buttons that are available in tis calculator.
@@ -132,7 +119,6 @@ function handleKeyboardPress(event) {
             handleDecimalButtonClick();
             break;
         case event.key === 'Enter':
-            enter = true;
             handleEnterButtonClick();
             break;
         case event.key === 'Backspace':
@@ -144,15 +130,12 @@ function handleKeyboardPress(event) {
     }
 }
 
-function updateDisplay(num) {
-    displayElement.textContent = numberBuffer.length > 0 ? numberBuffer.join('') : num || '';
+function updateDisplay(number, historyNumber) {
+    displayElement.textContent = numberBuffer.length > 0 ? numberBuffer.join('') : number || '';
+    displayHistory.textContent = history != undefined ? `${historyNumber}` : '';
 }
 
-function updateHistory(history) {
-    displayHistory.textContent = `${history}`;
-}
-
-function performCalculation() {
+function performCalculation(callback) {
     if (numbers.length < 2 || !currentOperator) return; // This codition is used to capture when users are trying to perform a calculation with only 1 number.
 
     const num1 = numbers.shift();
@@ -181,25 +164,10 @@ function performCalculation() {
             history = `${num1} / ${num2}`;
             break;
     }
-
     numbers.unshift(result);
-
-    if(enter === true) {
-        resetOperation(numbers[0])
-    } else {
-        continueOperation(numbers[0])
-    }
+    callback();
+    updateDisplay(numbers[0],history);
 }
 
-function resetOperation(result) {
-    operationKeepsGoing = false;
-    updateDisplay(result);
-    updateHistory(history);
-    enter = false;
-}
-
-function continueOperation(result) {
-    operationKeepsGoing = true;
-    updateDisplay(result);
-    updateHistory(history);
-}
+const resetOperation = () => operationKeepsGoing = false;
+const continueOperation = () => operationKeepsGoing = true;
